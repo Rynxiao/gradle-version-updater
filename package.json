@@ -1,0 +1,20 @@
+{
+  "name": "gradle-version-updater",
+  "version": "0.0.1",
+  "description": "gradle version updater",
+  "main": "src/cli.js",
+  "bin": {
+    "@rynxiao/gradle-version": "bin/gradle-version",
+    "gradle-version": "bin/gradle-version"
+  },
+  "keywords": [
+    "gradele",
+    "version",
+    "updater"
+  ],
+  "author": "ryn",
+  "license": "MIT",
+  "dependencies": {
+    "esm": "^3.2.25"
+  }
+}
