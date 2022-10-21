@@ -24,6 +24,11 @@
     "listr": "^0.14.3"
   },
   "devDependencies": {
-    "prettier": "2.7.1"
-  }
+    "prettier": "2.7.1",
+    "release-it": "^15.5.0"
+  },
+  "scripts": {
+    "release": "release-it"
+  },
+  "release-it": {}
 }
