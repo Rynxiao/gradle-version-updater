@@ -117,7 +117,7 @@ const writeVersion = async (options) => {
 
   try {
     const fileContent = await fsPromise.readFile(filePath, 'utf-8');
-    const updatedFileContent = fileContent.replace(/version\s*"\d.\d.\d"/g, `version "${options.version}"`);
+    const updatedFileContent = fileContent.replace(/version\s*"\d*.\d*.\d*"/g, `version "${options.version}"`);
     await fsPromise.writeFile(filePath, updatedFileContent, 'utf-8');
   } catch (error) {
     throw new Error('Update version failed');
