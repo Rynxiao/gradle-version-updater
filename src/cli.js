@@ -3,8 +3,11 @@ import inquirer from 'inquirer';
 import fsPromise from 'fs/promises';
 import fs from 'fs';
 import path from 'path';
+import chalk from 'chalk';
 
+const g2js = require('gradle-to-js/lib/parser');
 const work_dir = process.cwd();
+const FILE_NAME = 'build.gradle';
 
 const getProjectModules = async () => {
   const paths = await fsPromise.readdir(work_dir);
@@ -18,7 +21,7 @@ const getProjectModules = async () => {
 
   return dirs
     .map((dir) => {
-      const isGradleModule = fs.existsSync(path.resolve(work_dir, dir, 'build.gradle'));
+      const isGradleModule = fs.existsSync(path.resolve(work_dir, dir, FILE_NAME));
       return { dir, isGradleModule };
     })
     .filter((module) => module.isGradleModule)
@@ -40,33 +43,55 @@ const parseArgumentsIntoOptions = (rawArgs) => {
   };
 };
 
+const getModuleVersions = async (module) => {
+  const representation = await g2js.parseFile(path.resolve(work_dir, module, FILE_NAME));
+  const currentVersion = representation.version;
+
+  const getVersion = (splits, index) => {
+    const newSplits = [...splits];
+    newSplits[index] = parseInt(newSplits[index]) + 1;
+    return newSplits.join('.');
+  };
+
+  const splits = currentVersion.split('.');
+  const patchVersion = getVersion(splits, 2);
+  const minorVersion = getVersion(splits, 1);
+  const majorVersion = getVersion(splits, 0);
+
+  return { currentVersion, patchVersion, minorVersion, majorVersion };
+};
+
 const promptForMissingOptions = async (options) => {
   const modules = await getProjectModules();
+  let selectedModule = options.module;
 
-  const questions = [];
   if (!options.module) {
-    questions.push({
-      type: 'list',
-      name: 'module',
-      message: 'Please choose module version to update',
-      choices: modules,
-      default: modules.length > 0 ? modules[0] : '',
-    });
+    const moduleAnswer = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'module',
+        message: 'Please choose a module to update',
+        choices: modules,
+        default: modules.length > 0 ? selectedModule : '',
+      },
+    ]);
+    selectedModule = moduleAnswer.module;
   }
+  const { currentVersion, patchVersion, minorVersion, majorVersion } = await getModuleVersions(selectedModule);
 
-  questions.push({
-    type: 'list',
-    name: 'version',
-    message: 'Select increment (next version)',
-    choices: ['patch', 'minor', 'major'],
-    default: 'patch',
-  });
-
-  const answers = await inquirer.prompt(questions);
+  const versionAnswer = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'version',
+      message: `Select increment (next version), ${chalk.green.bold(currentVersion)}`,
+      choices: [`patch (${patchVersion})`, `minor (${minorVersion})`, `major (${majorVersion})`],
+      default: 'patch',
+    },
+  ]);
   return {
     ...options,
-    module: options.module || answers.module,
-    version: options.version || answers.version,
+    module: selectedModule,
+    version: options.version || versionAnswer.version,
   };
 };
 
