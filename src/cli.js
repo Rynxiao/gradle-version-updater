@@ -160,7 +160,7 @@ const runTasks = async (options) => {
       skip: () => (options.tagAndCommit ? undefined : 'Skip commit'),
     },
     {
-      title: 'Commit and tag',
+      title: 'Push',
       task: () => pushCode(options),
       skip: (ctx) => {
         const shouldPush = options.shouldPush && !ctx.isCommitFailed && options.tagAndCommit;
