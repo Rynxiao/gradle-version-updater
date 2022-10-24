@@ -85,7 +85,7 @@ const promptForMissingOptions = async (options) => {
     {
       type: 'list',
       name: 'version',
-      message: `Select increment (next version), ${chalk.green.bold(currentVersion)}`,
+      message: `Select increment (next version), [${chalk.green.bold(currentVersion)}]`,
       choices: [`patch (${patchVersion})`, `minor (${minorVersion})`, `major (${majorVersion})`],
       default: 'patch',
     },
@@ -113,7 +113,8 @@ const promptForMissingOptions = async (options) => {
     ...options,
     module: selectedModule,
     version: answers.version.match(/\d*\.\d*\.\d*/g)[0],
-    tagAndCommit: answers.tagAndCommit,
+    commit: answers.commit,
+    tag: answers.tag,
     shouldPush: answers.shouldPush,
   };
 };
