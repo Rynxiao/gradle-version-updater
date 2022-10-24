@@ -20,4 +20,4 @@ gradle-version
 
 ### ScreensShot
 
-![img.png](screenshots.png)
+![screenshot](https://github.com/Rynxiao/gradle-version-updater/raw/master/screenshots.png)
