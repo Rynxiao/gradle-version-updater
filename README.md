@@ -17,3 +17,7 @@ npm i gradle-version-updater -g
 ```shell
 gradle-version
 ```
+
+### ScreensShot
+
+![img.png](screenshots.png)

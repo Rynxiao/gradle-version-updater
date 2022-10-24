@@ -144,7 +144,7 @@ const makeCommit = async (options, ctx) => {
   }
 };
 
-const addTag = async (options, ctx) => {
+const addTag = async (options) => {
   try {
     await execa('git', ['tag', options.version], { cwd: work_dir });
   } catch (error) {
@@ -175,14 +175,14 @@ const runTasks = async (options) => {
     },
     {
       title: 'Add tag',
-      task: (ctx) => addTag(options, ctx),
+      task: () => addTag(options),
       skip: (ctx) => (options.tag && !ctx.isCommitFailed ? undefined : 'Skip tag'),
     },
     {
       title: 'Push',
       task: () => pushCode(options),
       skip: (ctx) => {
-        const shouldPush = options.shouldPush && !ctx.isCommitFailed && options.tagAndCommit;
+        const shouldPush = options.shouldPush && !ctx.isCommitFailed && options.commit;
         return shouldPush ? undefined : 'Skip push';
       },
     },
