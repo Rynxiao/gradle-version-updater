@@ -92,7 +92,7 @@ const promptForMissingOptions = async (options) => {
     {
       type: 'confirm',
       name: 'commit',
-      message: 'Commit to stage?',
+      message: 'Commit?',
       default: true,
     },
     {
@@ -168,7 +168,7 @@ const runTasks = async (options) => {
       task: () => writeVersion(options),
     },
     {
-      title: 'Commit to stage',
+      title: 'Commit',
       task: (ctx) => makeCommit(options, ctx),
       skip: () => (options.commit ? undefined : 'Skip commit'),
     },
