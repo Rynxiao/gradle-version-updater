@@ -106,7 +106,7 @@ const promptForMissingOptions = async (options) => {
   return {
     ...options,
     module: selectedModule,
-    version: answers.version.match(/\d.\d.\d/g)[0],
+    version: answers.version.match(/\d*.\d*.\d*/g)[0],
     tagAndCommit: answers.tagAndCommit,
     shouldPush: answers.shouldPush,
   };
