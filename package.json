@@ -1,6 +1,6 @@
 {
   "name": "gradle-version-updater",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "gradle version updater",
   "main": "src/cli.js",
   "bin": {
