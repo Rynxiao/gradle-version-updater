@@ -91,9 +91,15 @@ const promptForMissingOptions = async (options) => {
     },
     {
       type: 'confirm',
-      name: 'tagAndCommit',
-      message: 'Add tag and commit?',
+      name: 'commit',
+      message: 'Commit to stage?',
       default: true,
+    },
+    {
+      type: 'confirm',
+      name: 'tag',
+      message: 'Add tag?',
+      default: false,
     },
     {
       type: 'confirm',
@@ -131,9 +137,16 @@ const makeCommit = async (options, ctx) => {
   try {
     await execa('git', ['add', '.'], executeOptions);
     await execa('git', ['commit', '-m', commitMessage], executeOptions);
-    await execa('git', ['tag', options.version], executeOptions);
   } catch (error) {
     ctx.isCommitFailed = false;
+    throw new Error('Tag and commit failed');
+  }
+};
+
+const addTag = async (options, ctx) => {
+  try {
+    await execa('git', ['tag', options.version], { cwd: work_dir });
+  } catch (error) {
     throw new Error('Tag and commit failed');
   }
 };
@@ -155,9 +168,14 @@ const runTasks = async (options) => {
       task: () => writeVersion(options),
     },
     {
-      title: 'Commit and tag',
+      title: 'Commit to stage',
       task: (ctx) => makeCommit(options, ctx),
-      skip: () => (options.tagAndCommit ? undefined : 'Skip commit'),
+      skip: () => (options.commit ? undefined : 'Skip commit'),
+    },
+    {
+      title: 'Add tag',
+      task: (ctx) => addTag(options, ctx),
+      skip: (ctx) => (options.tag && !ctx.isCommitFailed ? undefined : 'Skip tag'),
     },
     {
       title: 'Push',
