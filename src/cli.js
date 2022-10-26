@@ -156,7 +156,10 @@ const pushCode = async (options) => {
   const executeOptions = { cwd: work_dir };
 
   try {
-    await execa('git', ['push', 'origin', options.version], executeOptions);
+    if (options.tag) {
+      await execa('git', ['push', 'origin', options.version], executeOptions);
+    }
+
     await execa('git', ['push'], executeOptions);
   } catch (error) {
     throw new Error('Push failed');
